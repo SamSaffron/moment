@@ -83,6 +83,8 @@
         // format function strings
         formatFunctions = {},
 
+        formatFunctions2 = {},
+
         // tokens to ordinalize and pad
         ordinalizeTokens = 'DDD w W M D d'.split(' '),
         paddedTokens = 'M D H h m s w W'.split(' '),
@@ -629,8 +631,27 @@
         };
     }
 
+    function makeFormatFunction2(format) {
+        var array = format.match(formattingTokens), i, length;
+
+        var func = "func = function(mom){ var output=''; ";
+
+        for (i = 0, length = array.length; i < length; i++) {
+            if (formatTokenFunctions[array[i]]) {
+               func += "output += formatTokenFunctions['" + array[i] + "'](mom, format); " ;
+            } else {
+               func += "output += '" +  removeFormattingTokens(array[i]).replace(/\\/g,'\\\\').replace(/'/g,"\\'") + "'; ";
+            }
+        }
+        func += "}";
+
+        return eval(func);
+
+    }
+
     // format date using native date object
     function formatMoment(m, format) {
+
         var i = 5;
 
         function replaceLongDateFormatTokens(input) {
@@ -649,25 +670,21 @@
     }
 
     function formatMoment2(m, format) {
+        var i = 5;
 
-        var key = format + "$$$$" + m.lang();
-
-        if (!formatFunctions[key]) {
-            formatFunctions[key] = (function(){
-              function replaceLongDateFormatTokens(input) {
-                  return m.lang().longDateFormat(input) || input;
-              }
-
-              var i = 5;
-              while (i-- && localFormattingTokens.test(format)) {
-                  format = format.replace(localFormattingTokens, replaceLongDateFormatTokens);
-              }
-
-              return makeFormatFunction(format);
-            })();
+        function replaceLongDateFormatTokens(input) {
+            return m.lang().longDateFormat(input) || input;
         }
 
-        return formatFunctions[key](m);
+        while (i-- && localFormattingTokens.test(format)) {
+            format = format.replace(localFormattingTokens, replaceLongDateFormatTokens);
+        }
+
+        if (!formatFunctions2[format]) {
+            formatFunctions2[format] = makeFormatFunction2(format);
+        }
+
+        return formatFunctions2[format](m);
     }
 
     /************************************
