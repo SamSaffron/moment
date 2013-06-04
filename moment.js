@@ -638,19 +638,14 @@
 
         for (i = 0, length = array.length; i < length; i++) {
             if (formatTokenFunctions[array[i]]) {
-               func += "output += formatTokenFunctions['" + array[i] + "'](mom, format); " ;
+               func += "output += formatTokenFunctions['" + array[i] + "'].call(mom, format); " ;
             } else {
                func += "output += '" +  removeFormattingTokens(array[i]).replace(/\\/g,'\\\\').replace(/'/g,"\\'") + "'; ";
             }
         }
         func += "}";
 
-        func = eval(func);
-
-        return function(mom) {
-          func.apply(this,mom);
-        };
-
+        return eval(func);
     }
 
     // format date using native date object
