@@ -645,7 +645,11 @@
         }
         func += "}";
 
-        return eval(func);
+        func = eval(func);
+
+        return function(mom) {
+          func.apply(this,mom);
+        }
 
     }
 
