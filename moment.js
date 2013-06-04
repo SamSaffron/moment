@@ -649,7 +649,7 @@
 
         return function(mom) {
           func.apply(this,mom);
-        }
+        };
 
     }
 
