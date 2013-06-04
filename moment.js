@@ -643,7 +643,7 @@
                func += "output += '" +  removeFormattingTokens(array[i]).replace(/\\/g,'\\\\').replace(/'/g,"\\'") + "'; ";
             }
         }
-        func += "}";
+        func += " return output; }";
 
         return eval(func);
     }
