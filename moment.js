@@ -648,6 +648,23 @@
         return formatFunctions[format](m);
     }
 
+    function formatMoment2(m, format) {
+        // var i = 5;
+
+        // function replaceLongDateFormatTokens(input) {
+        //     return m.lang().longDateFormat(input) || input;
+        // }
+
+        // while (i-- && localFormattingTokens.test(format)) {
+        //     format = format.replace(localFormattingTokens, replaceLongDateFormatTokens);
+        // }
+
+        if (!formatFunctions[format]) {
+            formatFunctions[format] = makeFormatFunction(format);
+        }
+
+        return formatFunctions[format](m);
+    }
 
     /************************************
         Parsing
@@ -1214,6 +1231,11 @@
 
         format : function (inputString) {
             var output = formatMoment(this, inputString || moment.defaultFormat);
+            return this.lang().postformat(output);
+        },
+
+        format2 : function (inputString) {
+            var output = formatMoment2(this, inputString || moment.defaultFormat);
             return this.lang().postformat(output);
         },
 
