@@ -649,21 +649,25 @@
     }
 
     function formatMoment2(m, format) {
-        // var i = 5;
 
-        // function replaceLongDateFormatTokens(input) {
-        //     return m.lang().longDateFormat(input) || input;
-        // }
+        var key = format + "$$$$" + m.lang();
 
-        // while (i-- && localFormattingTokens.test(format)) {
-        //     format = format.replace(localFormattingTokens, replaceLongDateFormatTokens);
-        // }
+        if (!formatFunctions[key]) {
+            formatFunctions[key] = (function(){
+              function replaceLongDateFormatTokens(input) {
+                  return m.lang().longDateFormat(input) || input;
+              }
 
-        if (!formatFunctions[format]) {
-            formatFunctions[format] = makeFormatFunction(format);
+              var i = 5;
+              while (i-- && localFormattingTokens.test(format)) {
+                  format = format.replace(localFormattingTokens, replaceLongDateFormatTokens);
+              }
+
+              return makeFormatFunction(format);
+            })();
         }
 
-        return formatFunctions[format](m);
+        return formatFunctions[key](m);
     }
 
     /************************************
